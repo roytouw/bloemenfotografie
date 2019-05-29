@@ -1,4 +1,6 @@
 from PIL import Image
+from time import sleep
+from queue import Queue
 
 
 class FustDetector:
@@ -9,6 +11,8 @@ class FustDetector:
         self.img_width = 300
         self.x_offset = 3
         self.y_offset = 3
+        self.snapshot_location = 'imgs/rainbow.jpg'
+        self.moving_average = 5
 
     def extract_brightness(self, image):
         r, g, b = 0, 0, 0
@@ -26,9 +30,41 @@ class FustDetector:
         r, g, b = r / pixelcount, g / pixelcount, b / pixelcount
         return (r + g + b) / 3
 
+    def get_moving_average(self, values):
+        sum = 0
+        for i in values:
+            sum += i
+        return sum / self.moving_average
+
+    def start_monitoring(self):
+        q = Queue(self.moving_average)
+
+        # Stack the queue with n values so the moving average can be calculated later.
+        for i in range(self.moving_average - 1):
+            self.picamera_mock()
+            q.put(self.extract_brightness(self.snapshot_location))
+
+        # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
+        # detect if moving average is off enough to depict object is detected.
+        while True:
+            self.picamera_mock()
+            q.put(self.extract_brightness(self.snapshot_location))
+            print(self.get_moving_average(q.get_all()))
+    #       TODO detect if moving average is off enough to depict object is detected.
+
+    # Refresh the self.snapshot_location with a fresh snapshot.
+    def picamera_mock(self):
+        sleep(1)
+        return
+
 
 if __name__ == "__main__":
     detector = FustDetector()
+    detector.start_monitoring()
     print(detector.extract_brightness('imgs/white.jpg'))
     print(detector.extract_brightness('imgs/black.jpg'))
     print(detector.extract_brightness('imgs/rainbow.jpg'))
+    print(detector.extract_brightness('imgs/fust1.png'))
+    print(detector.extract_brightness('imgs/fust2.jpg'))
+
+
