@@ -15,10 +15,17 @@ class FustDetector:
         self.x_offset = 3
         self.y_offset = 3
         self.snapshot_location = 'imgs/black.jpg'
-        self.moving_average = 5
+        self.moving_average = 10
         self.detection_trigger = 30.05
         self.log_location = 'measurements.txt'
-        # self.camera = PiCamera()
+        # self.camera = PiCamera(resolution=(300, 300), framerate=30)
+        # self.camera.iso = 100
+        sleep(2)
+        # self.camera.shutter_speed = camera.exposure_speed
+        # self.camera.exposure_mode = 'off'
+        # g = self.camera.awb_gains
+        # self.camera.awb_mode = 'off'
+        # self.camera_awb_gains = g
 
     def log(self, brightness, red, green, blue, moving_avg):
         with open(self.log_location, 'a') as log:
@@ -58,9 +65,7 @@ class FustDetector:
     # Refresh the self.snapshot_location with a fresh snapshot.
     # Give true to save photos in /detection_photos/.
     def take_photo(self, save=False):
-        # self.camera.resolution = (300, 300)
-        # self.camera.start_preview()
-        sleep(2)
+        sleep(0.25)
         # self.camera.capture(self.snapshot_location)
         if save:
             d = datetime.datetime.now()
