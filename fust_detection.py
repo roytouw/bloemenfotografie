@@ -3,6 +3,7 @@ from time import sleep
 from queue import Queue
 import datetime
 # from picamera import PiCamera
+from shutil import copyfile
 
 
 class FustDetector:
@@ -55,18 +56,23 @@ class FustDetector:
             return False
 
     # Refresh the self.snapshot_location with a fresh snapshot.
-    def take_photo(self):
+    # Give true to save photos in /detection_photos/.
+    def take_photo(self, save=False):
         # self.camera.resolution = (300, 300)
         # self.camera.start_preview()
         sleep(2)
         # self.camera.capture(self.snapshot_location)
+        if save:
+            d = datetime.datetime.now()
+            dest = "detection_photos/%d_%d_%d_%d_%d_%d.jpg" % (d.year, d.month, d.day, d.hour, d.minute, d.second)
+            copyfile(self.snapshot_location, dest)
 
     def start_monitoring(self):
         q = Queue(self.moving_average)
 
         # Stack the queue with n values so the moving average can be calculated later.
         for i in range(self.moving_average):
-            self.take_photo()
+            self.take_photo(True)
             photo_data = self.extract_brightness(self.snapshot_location)
             q.put(photo_data[0])
 
@@ -75,7 +81,7 @@ class FustDetector:
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
-            self.take_photo()
+            self.take_photo(True)
             photo_data = self.extract_brightness(self.snapshot_location)
             q.put(photo_data[0])
             moving_average = self.get_moving_average(q.get_all())
