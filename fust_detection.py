@@ -15,17 +15,11 @@ class FustDetector:
         self.x_offset = 3
         self.y_offset = 3
         self.snapshot_location = 'imgs/black.jpg'
-        self.moving_average = 10
+        self.moving_average = 5
         self.detection_trigger = 30.05
         self.log_location = 'measurements.txt'
         # self.camera = PiCamera(resolution=(300, 300), framerate=30)
-        # self.camera.iso = 100
         sleep(2)
-        # self.camera.shutter_speed = camera.exposure_speed
-        # self.camera.exposure_mode = 'off'
-        # g = self.camera.awb_gains
-        # self.camera.awb_mode = 'off'
-        # self.camera_awb_gains = g
 
     def log(self, brightness, red, green, blue, moving_avg):
         with open(self.log_location, 'a') as log:
@@ -77,7 +71,7 @@ class FustDetector:
 
         # Stack the queue with n values so the moving average can be calculated later.
         for i in range(self.moving_average):
-            self.take_photo(True)
+            self.take_photo()
             photo_data = self.extract_brightness(self.snapshot_location)
             q.put(photo_data[0])
 
@@ -86,7 +80,7 @@ class FustDetector:
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
-            self.take_photo(True)
+            self.take_photo()
             photo_data = self.extract_brightness(self.snapshot_location)
             q.put(photo_data[0])
             moving_average = self.get_moving_average(q.get_all())
