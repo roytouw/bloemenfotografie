@@ -17,6 +17,7 @@ class FustDetector:
         self.moving_average = 5
         self.detection_trigger = 30.05
         self.log_location = 'measurements.txt'
+        # self.camera = PiCamera()
 
     def save_measurement(self, *values):
         with open(self.log_location, 'a') as log:
@@ -57,11 +58,10 @@ class FustDetector:
 
     # Refresh the self.snapshot_location with a fresh snapshot.
     def take_photo(self):
-        # camera = PiCamera()
-        # camera.resolution = (300, 300)
-        # camera.start_preview()
+        # self.camera.resolution = (300, 300)
+        # self.camera.start_preview()
         sleep(2)
-        # camera.capture(self.snapshot_location)
+        # self.camera.capture(self.snapshot_location)
 
     def start_monitoring(self):
         q = Queue(self.moving_average)
