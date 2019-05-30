@@ -19,13 +19,13 @@ class FustDetector:
         self.log_location = 'measurements.txt'
         # self.camera = PiCamera()
 
-    def save_measurement(self, *values):
+    def log(self, brightness, red, green, blue, moving_avg):
         with open(self.log_location, 'a') as log:
             d = datetime.datetime.now()
-            log.write("%d:%d:%d,%f,%f,%f,%f\n" % (d.hour, d.minute, d.second, *values))
+            log.write("%d:%d:%d,%f,%f,%f,%f,%f\n" % (d.hour, d.minute, d.second, brightness, red, green, blue, moving_avg))
             log.close()
 
-    def extract_brightness(self, image, log_measurements=False):
+    def extract_brightness(self, image):
         r, g, b = 0, 0, 0
         im = Image.open(image)
         im = im.resize((self.img_width, self.img_height))
@@ -39,9 +39,7 @@ class FustDetector:
         y_pixelcount = self.img_height / self.y_offset
         pixelcount = x_pixelcount * y_pixelcount
         r, g, b = r / pixelcount, g / pixelcount, b / pixelcount
-        if log_measurements:
-            self.save_measurement(r, g, b, (r + g + b))
-        return (r + g + b) / 3
+        return (r + g + b) / 3, r, g, b
 
     def get_moving_average(self, values):
         sum = 0
@@ -69,16 +67,20 @@ class FustDetector:
         # Stack the queue with n values so the moving average can be calculated later.
         for i in range(self.moving_average):
             self.take_photo()
-            q.put(self.extract_brightness(self.snapshot_location, True))
+            photo_data = self.extract_brightness(self.snapshot_location)
+            q.put(photo_data[0])
 
-        calibration_val_avg = self.get_moving_average(q.get_all())
+        cal_moving_average = self.get_moving_average(q.get_all())
 
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
             self.take_photo()
-            q.put(self.extract_brightness(self.snapshot_location, True))
-            print(self.get_moving_average(q.get_all()))
+            photo_data = self.extract_brightness(self.snapshot_location)
+            q.put(photo_data[0])
+            moving_average = self.get_moving_average(q.get_all())
+            print(moving_average)
+            self.log(*photo_data, moving_average)
     #       TODO detect if moving average is off enough to depict object is detected.
 
 
