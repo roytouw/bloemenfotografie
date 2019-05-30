@@ -2,6 +2,7 @@ from PIL import Image
 from time import sleep
 from queue import Queue
 import datetime
+# from picamera import PiCamera
 
 
 class FustDetector:
@@ -56,8 +57,11 @@ class FustDetector:
 
     # Refresh the self.snapshot_location with a fresh snapshot.
     def take_photo(self):
-        sleep(1)
-        return
+        # camera = PiCamera()
+        # camera.resolution = (300, 300)
+        # camera.start_preview()
+        sleep(2)
+        # camera.capture(self.snapshot_location)
 
     def start_monitoring(self):
         q = Queue(self.moving_average)
