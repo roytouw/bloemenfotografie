@@ -15,11 +15,9 @@ class FustRecognizer:
     #     draw = ImageDraw.Draw(fust_image)
 
     # Turn pixels close enough to white black.
-    def colorize(self):
-        input_image = Image.open('imgs/fust3.jpg')
-        input_pixels = input_image.load()
-
-        output_image = Image.new("RGB", input_image.size)
+    def colorize(self, image):
+        input_pixels = image.load()
+        output_image = Image.new("RGB", image.size)
         draw = ImageDraw.Draw(output_image)
 
         for x in range(output_image.width):
@@ -61,10 +59,12 @@ class FustRecognizer:
 
         print(mean(measurements))
         print(median(measurements))
+        return median(measurements)
 
 
 if __name__ == "__main__":
     recognizer = FustRecognizer()
-    colorized_image = recognizer.colorize()
-    recognizer.getWidthOverRange(colorized_image, 100, 300, 10)
+    input_image = Image.open('imgs/fust3.jpg')
+    colorized_image = recognizer.colorize(input_image)
+    width = recognizer.getWidthOverRange(colorized_image, 100, 300, 10)
     # print(recognizer.distance2((255, 255, 255), (254, 254, 253)))
