@@ -1,6 +1,8 @@
 import pyqrcode
 from PIL import Image
 from pyzbar.pyzbar import decode
+from steppermotor_controller import StepperMotorController
+import re
 
 
 class QR:
@@ -10,8 +12,8 @@ class QR:
         self.scale = 20
         self.module_color = [0, 0, 0, 255]  # Black rgba
         self.background = [255, 255, 255, 255]  # White rgba
-        # self.qr = qrtools.QR()
 
+    # Generate new QR code and save.
     def generateQrCode(self, data, filename=''):
         qr = pyqrcode.create(data)
         if not filename:
@@ -19,13 +21,17 @@ class QR:
 
         qr.png(self.path + filename, self.scale, self.module_color, self.background)
 
+    # Scan data from QR file.
     def scanQrCode(self, file):
-        test = decode(Image.open('qr_codes/picture.jpeg'))
-        return test[0].data
+        data = decode(Image.open(self.path + str(file)))
+        return re.findall("\'(.*?)\'", str(data[0].data))[0]
 
 
 if __name__ == "__main__":
     qr = QR()
-    qr.generateQrCode(123)
-    data = qr.scanQrCode('123')
+    SMController = StepperMotorController()
+    newNumber = 3
+    qr.generateQrCode(newNumber)
+    fustCode = qr.scanQrCode(newNumber)
+    print(SMController.getHeightForQRCode(fustCode))
 
