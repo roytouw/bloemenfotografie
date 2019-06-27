@@ -14,12 +14,13 @@ class FustDetector:
         self.img_width = 300
         self.x_offset = 3
         self.y_offset = 3
-        self.snapshot_location = 'imgs/black.jpg'
+        self.snapshot_location = 'imgs/snapshot.jpg'
         self.moving_average = 5
         self.detection_trigger = 30.05
         self.log_location = 'measurements.txt'
         # self.camera = PiCamera(resolution=(300, 300), framerate=30)
         sleep(2)
+        self.hook = None  # Hook to call on detection, must be set in setHook method.
 
     def log(self, brightness, red, green, blue, moving_avg):
         with open(self.log_location, 'a') as log:
@@ -66,7 +67,15 @@ class FustDetector:
             dest = "detection_photos/%d_%d_%d_%d_%d_%d.jpg" % (d.year, d.month, d.day, d.hour, d.minute, d.second)
             copyfile(self.snapshot_location, dest)
 
+    # Set hook to be called on detection.
+    def setHook(self, func):
+        self.hook = func
+        return self
+
     def start_monitoring(self):
+        if not self.hook:
+            raise Exception('Hook is not set, please set hook before calling start_monitoring.')
+
         q = Queue(self.moving_average)
 
         # Stack the queue with n values so the moving average can be calculated later.
@@ -87,15 +96,12 @@ class FustDetector:
             print(moving_average)
             self.log(*photo_data, moving_average)
     #       TODO detect if moving average is off enough to depict object is detected.
+#           TODO call hook on detection.
+#           TODO pass image along hook for better flow in main
 
 
 if __name__ == "__main__":
     detector = FustDetector()
     detector.start_monitoring()
-    # print(detector.extract_brightness('imgs/white.jpg'))
-    # print(detector.extract_brightness('imgs/black.jpg'))
-    # print(detector.extract_brightness('imgs/rainbow.jpg'))
-    # print(detector.extract_brightness('imgs/fust1.png'))
-    # print(detector.extract_brightness('imgs/fust2.jpg'))
 
 
