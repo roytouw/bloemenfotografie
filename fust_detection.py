@@ -30,10 +30,9 @@ class FustDetector:
             log.write("%d:%d:%d,%f,%f,%f,%f,%f\n" % (d.hour, d.minute, d.second, brightness, red, green, blue, moving_avg))
             log.close()
 
-    def extract_brightness(self, image):
+    def extract_brightness(self, image: Image):
         r, g, b = 0, 0, 0
-        im = Image.open(image)
-        im = im.resize((self.img_width, self.img_height))
+        im = image.resize((self.img_width, self.img_height))
         pix = im.load()
         for i in range(0, self.img_width,  self.x_offset):
             for j in range(0, self.img_height, self.y_offset):
@@ -68,11 +67,14 @@ class FustDetector:
         # self.camera.capture(stream, format='jpeg')
         stream.seek(0)
         image = Image.open(stream)
+
         if save:
             d = datetime.datetime.now()
             dest = "detection_photos/%d_%d_%d_%d_%d_%d.jpg" % (d.year, d.month, d.day, d.hour, d.minute, d.second)
             # copyfile(self.snapshot_location, dest)
             image.save(dest, "JPEG")
+
+        return image
 
     # Set hook to be called on detection.
     def setHook(self, func):
@@ -96,12 +98,14 @@ class FustDetector:
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
-            self.take_photo()
-            photo_data = self.extract_brightness(self.snapshot_location)
+            photo = self.take_photo()
+            photo_data = self.extract_brightness(photo)
             q.put(photo_data[0])
             moving_average = self.get_moving_average(q.get_all())
             print(moving_average)
             self.log(*photo_data, moving_average)
+            if True:
+                self.hook(photo)
     #       TODO detect if moving average is off enough to depict object is detected.
 #           TODO call hook on detection.
 #           TODO pass image along hook for better flow in main
