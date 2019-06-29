@@ -1,4 +1,6 @@
-from PIL import Image
+from io import BytesIO
+
+from PIL import Image, ImageFile
 from time import sleep
 from queue import Queue
 import datetime
@@ -60,12 +62,17 @@ class FustDetector:
     # Refresh the self.snapshot_location with a fresh snapshot.
     # Give true to save photos in /detection_photos/.
     def take_photo(self, save=False):
+        stream = BytesIO()
         sleep(0.25)
         # self.camera.capture(self.snapshot_location)
+        # self.camera.capture(stream, format='jpeg')
+        stream.seek(0)
+        image = Image.open(stream)
         if save:
             d = datetime.datetime.now()
             dest = "detection_photos/%d_%d_%d_%d_%d_%d.jpg" % (d.year, d.month, d.day, d.hour, d.minute, d.second)
-            copyfile(self.snapshot_location, dest)
+            # copyfile(self.snapshot_location, dest)
+            image.save(dest, "JPEG")
 
     # Set hook to be called on detection.
     def setHook(self, func):

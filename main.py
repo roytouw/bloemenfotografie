@@ -18,4 +18,5 @@ def onDetection(image):
 #   TODO move stepper motor and take the proper photo.
 
 
-fust_detector.hook(onDetection).start_monitoring()
+fust_detector.setHook(onDetection).start_monitoring()
+
