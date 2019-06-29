@@ -5,7 +5,6 @@ from time import sleep
 from queue import Queue
 import datetime
 # from picamera import PiCamera
-from shutil import copyfile
 
 
 class FustDetector:
@@ -104,7 +103,7 @@ class FustDetector:
             moving_average = self.get_moving_average(q.get_all())
             print(moving_average)
             self.log(*photo_data, moving_average)
-            if True:
+            if self.object_detection(moving_average, cal_moving_average):
                 self.hook(photo)
     #       TODO detect if moving average is off enough to depict object is detected.
 #           TODO call hook on detection.
