@@ -16,18 +16,20 @@ motor_driver = MotorDriver()
 
 
 def onDetection(image):
-    qr_data = qr.scanQrCode(image)
-    fust_width = fust_recognizer.getWidthOverRange(image)
-    qr_height = steppermotor_controller.getHeightForQRCode(qr_data)
-    detected_height = steppermotor_controller.getHeightForWidth(fust_width)
-    height = steppermotor_controller.getHeightForQRCode(1)
+    print('fust')
+#    qr_data = qr.scanQrCode(image)
+#    fust_width = fust_recognizer.getWidthOverRange(image)
+#    qr_height = steppermotor_controller.getHeightForQRCode(qr_data)
+#    detected_height = steppermotor_controller.getHeightForWidth(fust_width)
+    height = steppermotor_controller.getHeightForQRCode(3)
     motor_driver.rotate(height)
 
 #   TODO move stepper motor and take the proper photo.
 
 
 def lostDetection(image):
-    height = steppermotor_controller.getHeightForQRCode(3)
+    print('nothing')
+    height = steppermotor_controller.getHeightForQRCode(1)
     motor_driver.rotate(height)
 
 

@@ -10,7 +10,7 @@ class MotorDriver:
         self.out2 = 11
         self.out3 = 13
         self.out4 = 15
-        self.sleep = 0.0024
+        self.sleep = 0.0020
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.out1, GPIO.OUT)
         GPIO.setup(self.out2, GPIO.OUT)

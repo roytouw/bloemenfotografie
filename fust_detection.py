@@ -17,7 +17,7 @@ class FustDetector:
         self.y_offset = 3
         self.snapshot_location = 'imgs/snapshot.jpg'
         self.moving_average = 5
-        self.detection_trigger = 30.05
+        self.detection_trigger = 10.05
         self.log_location = 'measurements.txt'
         self.camera = PiCamera(resolution=(300, 300), framerate=30)
         sleep(2)
