@@ -28,3 +28,6 @@ if __name__ == "__main__":
     controller = StepperMotorController()
     height = controller.getHeightForWidth(205.5)
     print(height)
+
+
+# TODO this class should keep notice of height and move accordingly.
