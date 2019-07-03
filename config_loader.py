@@ -5,13 +5,13 @@ class ConfigLoader:
 
     def __init__(self):
         self.configFile = "config.json"
-        self.test = None
+        self.snapshot_location = None
 
     def load_configuration(self):
         with open(self.configFile) as config:
             data = json.load(config)
 
-        self.test = data['test']
+        self.snapshot_location = data['fust_detection']['snapshot_location']
 
 
 if __name__ == "__main__":

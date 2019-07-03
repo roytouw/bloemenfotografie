@@ -17,7 +17,7 @@ class QR:
     def generateQrCode(self, data, filename=''):
         qr = pyqrcode.create(data)
         if not filename:
-            filename = str(data)
+            filename = str(data) + '.png'
 
         qr.png(self.path + filename, self.scale, self.module_color, self.background)
 
@@ -29,9 +29,11 @@ class QR:
 
 if __name__ == "__main__":
     qr = QR()
-    SMController = StepperMotorController()
-    newNumber = 3
-    qr.generateQrCode(newNumber)
-    fustCode = qr.scanQrCode(newNumber)
-    print(SMController.getHeightForQRCode(fustCode))
+    # SMController = StepperMotorController()
+    # newNumber = 3
+    # qr.generateQrCode(newNumber)
+    # fustCode = qr.scanQrCode(newNumber)
+    # print(SMController.getHeightForQRCode(fustCode))
+    for i in range(1, 6):
+        qr.generateQrCode(i)
 

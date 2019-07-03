@@ -10,5 +10,9 @@ class MotorDriver:
         self.out3 = 15
         self.out4 = 12
 
+    # Destructor, cleanup.
+    def __del__(self):
+        GPIO.cleanup()
+
 
     def rotate(self, rotation):

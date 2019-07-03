@@ -2,14 +2,14 @@ class StepperMotorController:
 
     def __init__(self):
         self.qr_map = {
-            1: 100,
-            2: 120,
-            3: 140
+            1: 400,
+            2: 800,
+            3: 1200
         }
 
         self.width_map = {
-            range(0, 200): 100,
-            range(200, 400): 120
+            range(0, 200): 800,
+            range(200, 400): 1200
         }
 
     def getHeightForQRCode(self, code):

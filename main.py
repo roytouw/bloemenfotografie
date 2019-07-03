@@ -1,9 +1,12 @@
+from config_loader import ConfigLoader
 from fust_detection import FustDetector
 from qr_code import QR
 from fust_recognizer import FustRecognizer
 from steppermotor_controller import StepperMotorController
 
 
+configLoader = ConfigLoader()
+configLoader.load_configuration()
 fust_detector = FustDetector()
 qr = QR()
 fust_recognizer = FustRecognizer()
