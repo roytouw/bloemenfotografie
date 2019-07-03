@@ -21,7 +21,8 @@ class FustDetector:
         self.log_location = 'measurements.txt'
         # self.camera = PiCamera(resolution=(300, 300), framerate=30)
         sleep(2)
-        self.hook = None  # Hook to call on detection, must be set in setHook method.
+        self.detectionHook = None  # Hook to call on detection, must be set in setHook method.
+        self.nonDetectionHook = None # Hook to call on losing detection, optional.
 
     def log(self, brightness, red, green, blue, moving_avg):
         with open(self.log_location, 'a') as log:
@@ -76,20 +77,24 @@ class FustDetector:
         return image
 
     # Set hook to be called on detection.
-    def setHook(self, func):
-        self.hook = func
+    def setDetectionHook(self, func):
+        self.detectionHook = func
+        return self
+
+    def setNonDetectionHook(self, func):
+        self.nonDetectionHook = func
         return self
 
     def start_monitoring(self):
-        if not self.hook:
+        if not self.detectionHook:
             raise Exception('Hook is not set, please set hook before calling start_monitoring.')
 
         q = Queue(self.moving_average)
 
         # Stack the queue with n values so the moving average can be calculated later.
         for i in range(self.moving_average):
-            self.take_photo()
-            photo_data = self.extract_brightness(self.snapshot_location)
+            photo = self.take_photo()
+            photo_data = self.extract_brightness(photo)
             q.put(photo_data[0])
 
         cal_moving_average = self.get_moving_average(q.get_all())
@@ -104,7 +109,9 @@ class FustDetector:
             print(moving_average)
             self.log(*photo_data, moving_average)
             if self.object_detection(moving_average, cal_moving_average):
-                self.hook(photo)
+                self.detectionHook(photo)
+            else:
+                self.nonDetectionHook(photo)
     #       TODO detect if moving average is off enough to depict object is detected.
 #           TODO call hook on detection.
 #           TODO pass image along hook for better flow in main

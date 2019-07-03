@@ -18,8 +18,9 @@ def onDetection(image):
     fust_width = fust_recognizer.getWidthOverRange(image)
     qr_height = steppermotor_controller.getHeightForQRCode(qr_data)
     detected_height = steppermotor_controller.getHeightForWidth(fust_width)
+    steppermotor_controller.getHeightForQRCode()
 #   TODO move stepper motor and take the proper photo.
 
 
-fust_detector.setHook(onDetection).start_monitoring()
+fust_detector.setDetectionHook(onDetection).start_monitoring()
 
