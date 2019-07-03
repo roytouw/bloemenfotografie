@@ -1,6 +1,8 @@
 class StepperMotorController:
 
     def __init__(self):
+        self.height = 0
+
         self.qr_map = {
             1: 400,
             2: 800,
@@ -14,19 +16,31 @@ class StepperMotorController:
 
     def getHeightForQRCode(self, code):
         if int(code) in self.qr_map:
-            return self.qr_map[int(code)]
+            move = self.qr_map[int(code)] - self.height
+            self.height = self.qr_map[int(code)]
+            return move
         else:
             raise Exception("qr_map doesn't contain requested key")
 
     def getHeightForWidth(self, width):
         for key in self.width_map:
             if int(width) in key:
-                return self.width_map[key]
+                move = self.width_map[key] - self.height
+                self.height = self.width_map[key]
+                return move
 
 
 if __name__ == "__main__":
     controller = StepperMotorController()
-    height = controller.getHeightForWidth(205.5)
+    height = controller.getHeightForQRCode(1)
+    print(height)
+    height = controller.getHeightForQRCode(2)
+    print(height)
+    height = controller.getHeightForQRCode(3)
+    print(height)
+    height = controller.getHeightForQRCode(1)
+    print(height)
+    height = controller.getHeightForQRCode(3)
     print(height)
 
 
