@@ -46,6 +46,30 @@ class MotorDriver:
                     continue
                 i += 1
 
+        elif -10000 < rotation < 0:
+            i = 7
+            for y in range(rotation, 0, -1):
+                if i == 0:
+                    self.pos0()
+                elif i == 1:
+                    self.pos1()
+                elif i == 2:
+                    self.pos2()
+                elif i == 3:
+                    self.pos3()
+                elif i == 4:
+                    self.pos4()
+                elif i == 5:
+                    self.pos5()
+                elif i == 6:
+                    self.pos6()
+                elif i == 7:
+                    self.pos7()
+                else:
+                    i = 7
+                    continue
+                i -= 1
+            
     def pos0(self):
         GPIO.output(self.out1, GPIO.HIGH)
         GPIO.output(self.out2, GPIO.LOW)
