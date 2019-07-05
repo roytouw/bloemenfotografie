@@ -22,8 +22,11 @@ class QR:
         qr.png(self.path + filename, self.scale, self.module_color, self.background)
 
     # Scan data from QR file.
-    def scanQrCode(self, file):
-        data = decode(Image.open(self.path + str(file)))
+    def scanQrCode(self, image):
+        #data = decode(Image.open(self.path + str(file)))
+        data = decode(image)
+        if len(data) == 0:
+            return -1
         return re.findall("\'(.*?)\'", str(data[0].data))[0]
 
 

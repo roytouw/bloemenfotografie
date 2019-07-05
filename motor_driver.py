@@ -10,7 +10,7 @@ class MotorDriver:
         self.out2 = 11
         self.out3 = 13
         self.out4 = 15
-        self.sleep = 0.0020
+        self.sleep = 0.0024
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.out1, GPIO.OUT)
         GPIO.setup(self.out2, GPIO.OUT)
@@ -23,7 +23,7 @@ class MotorDriver:
 
     def rotate(self, rotation):
         print(rotation)
-        if rotation > 0 and rotation < 10000:
+        if rotation > 0 and rotation < 40000:
             i = 0
             for y in range(rotation, 0, -1):
                 if i == 0:
@@ -47,7 +47,7 @@ class MotorDriver:
                     continue
                 i += 1
 
-        elif rotation > -10000 and rotation < 0:
+        elif rotation > -40000 and rotation < 0:
             i = 7
             for y in range(rotation, 0, 1):
                 if i == 0:
@@ -130,5 +130,5 @@ class MotorDriver:
 
 if __name__ == "__main__":
     driver = MotorDriver()
-    driver.rotate(-4000)
-#    driver.rotate(4000)
+    driver.rotate(-8000)
+#    driver.rotate(6000)

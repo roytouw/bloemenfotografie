@@ -16,8 +16,8 @@ class FustDetector:
         self.x_offset = 3
         self.y_offset = 3
         self.snapshot_location = 'imgs/snapshot.jpg'
-        self.moving_average = 5
-        self.detection_trigger = 10.05
+        self.moving_average = 10
+        self.detection_trigger = 4
         self.log_location = 'measurements.txt'
         self.camera = PiCamera(resolution=(300, 300), framerate=30)
         sleep(2)
@@ -99,6 +99,7 @@ class FustDetector:
 
         cal_moving_average = self.get_moving_average(q.get_all())
 
+        detected = False
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
@@ -106,12 +107,18 @@ class FustDetector:
             photo_data = self.extract_brightness(photo)
             q.put(photo_data[0])
             moving_average = self.get_moving_average(q.get_all())
-            print(moving_average)
+            print(moving_average, cal_moving_average)
             self.log(*photo_data, moving_average)
             if self.object_detection(moving_average, cal_moving_average):
-                self.detectionHook(photo)
+                if detected == False:
+                    detected = True
+                    self.detectionHook(photo)
+                    print("Detected recognizer")
             else:
-                self.nonDetectionHook(photo)
+                if detected == True:
+                   detected = False
+                   self.nonDetectionHook(photo)
+                   print("Nothing recognizer")
     #       TODO detect if moving average is off enough to depict object is detected.
 #           TODO call hook on detection.
 #           TODO pass image along hook for better flow in main

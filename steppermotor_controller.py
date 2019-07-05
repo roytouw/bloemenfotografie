@@ -4,8 +4,9 @@ class StepperMotorController:
         self.height = 0
 
         self.qr_map = {
-            1: 0,
-            2: 800,
+            -1: 0,
+            1: 20000,
+            2: 18000,
             3: 8000
         }
 
