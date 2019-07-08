@@ -53,7 +53,7 @@ class FustDetector:
 
     def object_detection(self, moving_average, calibration_average):
         diff = abs(moving_average - calibration_average)
-        if diff > self.detection_trigger:
+        if diff >= self.detection_trigger:
             return True
         else:
             return False
@@ -71,7 +71,7 @@ class FustDetector:
         if save:
             d = datetime.datetime.now()
             dest = "detection_photos/%d_%d_%d_%d_%d_%d.jpg" % (d.year, d.month, d.day, d.hour, d.minute, d.second)
-            copyfile(self.snapshot_location, dest)
+            # copyfile(self.snapshot_location, dest)
             image.save(dest, "JPEG")
 
         return image
@@ -99,7 +99,7 @@ class FustDetector:
 
         cal_moving_average = self.get_moving_average(q.get_all())
 
-        detected = False
+        detected = None
         # Enter main loop, put each new snapshot's brightness in queue, calculate moving average,
         # detect if moving average is off enough to depict object is detected.
         while True:
@@ -110,12 +110,12 @@ class FustDetector:
             print(moving_average, cal_moving_average)
             self.log(*photo_data, moving_average)
             if self.object_detection(moving_average, cal_moving_average):
-                if detected == False:
+                if detected == False or detected == None:
                     detected = True
                     self.detectionHook(photo)
                     print("Detected recognizer")
             else:
-                if detected == True:
+                if detected == True or detected == None:
                    detected = False
                    self.nonDetectionHook(photo)
                    print("Nothing recognizer")

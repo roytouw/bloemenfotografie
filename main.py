@@ -1,5 +1,6 @@
 import os
 import datetime
+import _thread
 from config_loader import ConfigLoader
 from fust_detection import FustDetector
 from qr_code import QR
@@ -7,6 +8,7 @@ from fust_recognizer import FustRecognizer
 from steppermotor_controller import StepperMotorController
 from motor_driver import MotorDriver
 from GUI import GUI
+from PIL import Image
 
 
 configLoader = ConfigLoader()
@@ -27,6 +29,9 @@ def onDetection(image):
     name = str(datetime.datetime.now()).replace(" ", "")
     command = "fswebcam -d /dev/video0 -r 1600x1200 " + name + ".jpg"
     os.system(command)
+    img = Image.open(name + ".jpg")
+    img = img.resize((300, 300), Image.ANTIALIAS)
+    gui.setImage(img)
 
 
 def lostDetection(image):
@@ -35,5 +40,6 @@ def lostDetection(image):
     motor_driver.rotate(height)
 
 
-fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring()
-
+# fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring()
+_thread.start_new_thread(lambda: fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring(), ())
+_thread.start_new_thread(gui.root.mainloop(), ())
