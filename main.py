@@ -27,10 +27,10 @@ def onDetection(image):
     height = steppermotor_controller.getHeightForQRCode(qr_data)
     motor_driver.rotate(height)
     name = str(datetime.datetime.now()).replace(" ", "")
-    command = "fswebcam -d /dev/video0 -r 1600x1200 " + name + ".jpg"
+    command = "fswebcam -d /dev/video0 -r 1600x1200 --rotate 90 " + name + ".jpg"
     os.system(command)
     img = Image.open(name + ".jpg")
-    img = img.resize((300, 300), Image.ANTIALIAS)
+    img = img.resize((800, 800), Image.ANTIALIAS)
     gui.setImage(img)
 
 
@@ -40,6 +40,6 @@ def lostDetection(image):
     motor_driver.rotate(height)
 
 
-# fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring()
+#fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring()
 _thread.start_new_thread(lambda: fust_detector.setDetectionHook(onDetection).setNonDetectionHook(lostDetection).start_monitoring(), ())
 _thread.start_new_thread(gui.root.mainloop(), ())

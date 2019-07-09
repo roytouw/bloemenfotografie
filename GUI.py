@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import tkinter as tk
 import _thread
 
@@ -12,6 +14,9 @@ class GUI:
         self.imagePanel = tk.Label(self.root)
         self.imagePanel.pack(side="bottom", fill="both", expand="yes")
         self.root.attributes("-fullscreen", True)
+
+    def __del__(self):
+        self.root.quit()
 
     def setImage(self, image):
         img = ImageTk.PhotoImage(image)
