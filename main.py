@@ -8,8 +8,8 @@ from fust_recognizer import FustRecognizer
 from steppermotor_controller import StepperMotorController
 from motor_driver import MotorDriver
 from GUI import GUI
+from crop_foto import crop_image
 from PIL import Image
-
 
 configLoader = ConfigLoader()
 configLoader.load_configuration()
@@ -30,6 +30,7 @@ def onDetection(image):
     command = "fswebcam -d /dev/video0 -r 1600x1200 --rotate 90 " + name + ".jpg"
     os.system(command)
     img = Image.open(name + ".jpg")
+    crop_image(img)
     img = img.resize((800, 800), Image.ANTIALIAS)
     gui.setImage(img)
 
