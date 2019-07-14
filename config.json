@@ -1,5 +1,14 @@
 {
   "fust_detection": {
     "snapshot_location": "test.jpg"
-  }
+  },
+  "crop_config": {
+    "padding": 50,
+    "thresholdValue": 5,
+    "fust_color": [229,204,176],
+    "color_differentiation": 0.01,
+    "fust_edge_length": 10,
+    "ratio": [4,3],
+    "network_folder": ""
+}
 }

@@ -1,5 +1,6 @@
 from PIL import Image as img
 import math
+import json
 
 def crop_image(filename):
     # This function is called from the main.py and crops the image.
@@ -16,13 +17,16 @@ def crop_image(filename):
     rightpixel = -5                 # x2
     bottomrow = size[1]             # y2
 
-    padding = 50                        # user config, in px
-    thresholdValue = 5                  # user config, color must be atleast this % different
-    fust_color = (229,204,176)          # user config, color of a fust in RGB
-    color_differentiation = 0.01        # user config, as % color differentiation
-    fust_edge_length = 10               # user config, length of detection for fust
-    ratio = [4,3]                       # user config, image output ratio
-    network_folder = ''                 # user config, save location for cropped images
+    with open('config.json', 'r') as crop_config:    # load configuration from config.json
+        data = json.load(crop_config)
+
+    padding = data['crop_config']['padding']                                # user config, in px
+    thresholdValue = data['crop_config']['thresholdValue']                  # user config, color must be atleast this % different
+    fust_color = data['crop_config']['fust_color']                          # user config, color of a fust in RGB
+    color_differentiation = data['crop_config']['color_differentiation']    # user config, as % color differentiation
+    fust_edge_length = data['crop_config']['fust_edge_length']              # user config, length of detection for fust
+    ratio = data['crop_config']['ratio']                                    # user config, image output ratio
+    network_folder = data['crop_config']['network_folder']                  # user config, save location for cropped images
 
     threshold = 255 * ( 1 - (thresholdValue / 100) )
 
