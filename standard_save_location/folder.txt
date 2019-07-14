@@ -1,0 +1,2 @@
+Deze folder is de standaard folder waar cropped fotos worden opgeslagen als
+de network_folder variable niet gezet is in crop_foto.py.
