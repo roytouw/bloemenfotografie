@@ -30,7 +30,7 @@ def onDetection(image):
     command = "fswebcam -d /dev/video0 -r 1600x1200 --rotate 90 " + name + ".jpg"
     os.system(command)
     img = Image.open(name + ".jpg")
-    crop_image(img)
+    crop_image(name + ".jpg")
     img = img.resize((800, 800), Image.ANTIALIAS)
     gui.setImage(img)
 
