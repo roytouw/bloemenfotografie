@@ -4,7 +4,7 @@ from PIL import Image, ImageFile
 from time import sleep
 from queue import Queue
 import datetime
-from picamera import PiCamera
+# from picamera import PiCamera
 
 
 class FustDetector:
@@ -19,7 +19,7 @@ class FustDetector:
         self.moving_average = 10
         self.detection_trigger = 4
         self.log_location = 'measurements.txt'
-        self.camera = PiCamera(resolution=(300, 300), framerate=30)
+        # self.camera = PiCamera(resolution=(300, 300), framerate=30)
         sleep(2)
         self.detectionHook = None  # Hook to call on detection, must be set in setHook method.
         self.nonDetectionHook = None # Hook to call on losing detection, optional.

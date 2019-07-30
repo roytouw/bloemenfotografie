@@ -4,7 +4,7 @@
   },
   "crop_config": {
     "padding": 50,
-    "thresholdValue": 5,
+    "threshold_value": 5,
     "fust_color": [229,204,176],
     "color_differentiation": 0.01,
     "fust_edge_length": 10,

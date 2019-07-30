@@ -1,7 +1,7 @@
 import pyqrcode
 from PIL import Image
 from pyzbar.pyzbar import decode
-from steppermotor_controller import StepperMotorController
+# from steppermotor_controller import StepperMotorController
 import re
 
 

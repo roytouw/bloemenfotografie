@@ -2,6 +2,7 @@ from PIL import Image as img
 import math
 import json
 
+
 def crop_image(filename):
     # This function is called from the main.py and crops the image.
     # Once the image is cropped, it is saved to a file on the users
@@ -9,7 +10,8 @@ def crop_image(filename):
 
     foto = img.open(filename)
     size = width, height = foto.size
-    foto_stdr_save_location = 'standard_save_location/'     # Standard folder to save cropped image to if network folder is not set
+    # Standard folder to save cropped image to if network folder is not set
+    foto_stdr_save_location = 'standard_save_location/'
 
     # crop with pillow tuple, (x1, y1, x2, y2)
     toppixel = -5                   # y1
@@ -17,25 +19,34 @@ def crop_image(filename):
     rightpixel = -5                 # x2
     bottomrow = size[1]             # y2
 
-    with open('config.json', 'r') as crop_config:    # load configuration from config.json
+    # load configuration from config.json
+    with open('config.json', 'r') as crop_config:
         data = json.load(crop_config)
 
-    padding = data['crop_config']['padding']                                # user config, in px
-    thresholdValue = data['crop_config']['thresholdValue']                  # user config, color must be atleast this % different
-    fust_color = data['crop_config']['fust_color']                          # user config, color of a fust in RGB
-    color_differentiation = data['crop_config']['color_differentiation']    # user config, as % color differentiation
-    fust_edge_length = data['crop_config']['fust_edge_length']              # user config, length of detection for fust
-    ratio = data['crop_config']['ratio']                                    # user config, image output ratio
-    network_folder = data['crop_config']['network_folder']                  # user config, save location for cropped images
+    # user config, in px
+    padding = data['crop_config']['padding']
+    # user config, color must be at least this % different
+    threshold_value = data['crop_config']['threshold_value']
+    # user config, color of a fust in RGB
+    fust_color = data['crop_config']['fust_color']
+    # user config, as % color differentiation
+    color_differentiation = data['crop_config']['color_differentiation']
+    # user config, length of detection for fust
+    fust_edge_length = data['crop_config']['fust_edge_length']
+    # user config, image output ratio
+    ratio = data['crop_config']['ratio']
+    # user config, save location for cropped images
+    network_folder = data['crop_config']['network_folder']
 
-    threshold = 255 * ( 1 - (thresholdValue / 100) )
+    threshold = 255 * (1 - (threshold_value / 100))
 
     max_color = max(1, fust_color[0],fust_color[1], fust_color[2])
-    color_relation = (fust_color[0]/max_color,fust_color[1]/max_color, fust_color[2]/max_color)
+    color_relation = (fust_color[0]/max_color,fust_color[1]/max_color,
+                      fust_color[2]/max_color)
     fust_edge_counter = 0
 
     foto_rgb_list = list(foto.getdata())
-    
+
     # find left, right and top pixels that are under the threshold value
     for i in range(len(foto_rgb_list)):
         y = math.floor(i / size[0])
@@ -63,35 +74,35 @@ def crop_image(filename):
                 fust_edge_counter = 0
             if fust_edge_counter > fust_edge_length:
                 bottomrow = y
-        elif leftpixel >= 0 and rightpixel >= 0: # ignore inbetween space
-            # i += rightpixel - leftpixel
+        elif leftpixel >= 0 and rightpixel >= 0:    # ignore inbetween space
+            i += rightpixel - leftpixel
             break
-    
+
     # Adding padding for cropped image
     leftpixel -= padding
     rightpixel += padding
     toppixel -= padding
     bottomrow += padding
-    
+
     # Add padding for ratio
     crop_width = rightpixel - leftpixel
     crop_height = bottomrow - toppixel
-    
+
     crop_ratio = crop_width / crop_height
     user_ratio = ratio[0] / ratio[1]
     print('crop r', crop_ratio)
     print('user r', user_ratio)
 
     delta_ratio = crop_ratio - user_ratio
-    
+
     if delta_ratio > 0:
         p = crop_height * delta_ratio
-        print('delta r > 0, p = ',p)
+        print('delta r > 0, p = ', p)
         toppixel -= math.floor(p/2)
         bottomrow += math.ceil(p/2)
     elif delta_ratio < 0:
         p = crop_width * -delta_ratio
-        print('delta r < 0, p = ',p)
+        print('delta r < 0, p = ', p)
         rightpixel += math.floor(p/2)
         leftpixel -= math.ceil(p/2)
 
@@ -107,5 +118,6 @@ def crop_image(filename):
     foto_cropped = foto.crop((leftpixel, toppixel, rightpixel, bottomrow))
     if not network_folder:
         foto_cropped.save(foto_stdr_save_location + filename)
+        return foto_stdr_save_location + filename
     else:
         foto_cropped.save(network_folder + filename)
